@@ -14,6 +14,7 @@
         <thead>
             <tr>
                 <th>📅 วันที่สั่งซื้อ</th>
+                <th>📆 วันรับสินค้า</th>  <!-- ✅ เพิ่มคอลัมน์วันรับสินค้า -->
                 <th>💰 ราคารวม</th>
                 <th>📦 สถานะ</th>
                 <th>💳 วิธีชำระเงิน</th>
@@ -23,6 +24,13 @@
             {% for order in orders %}
             <tr>
                 <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    {% if order.pickup_time %}
+                        {{ order.pickup_time|date:"Y-m-d H:i" }}  <!-- ✅ แสดงวันรับสินค้า -->
+                    {% else %}
+                        <span class="text-muted">❌ ไม่ระบุ</span>  <!-- ✅ ถ้าไม่มีวันรับ -->
+                    {% endif %}
+                </td>
                 <td>{{ order.total_price }} บาท</td>
                 <td>
                     {% if order.status == "preparing" %}
@@ -31,15 +39,19 @@
                         <span class="badge bg-info">พร้อมรับสินค้า</span>
                     {% elif order.status == "completed" %}
                         <span class="badge bg-success">สำเร็จ</span>
+                    {% elif order.status == "cancelled" %}
+                        <span class="badge bg-danger">❌ ยกเลิก</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if order.payment_method == "cash" %}
-                        เงินสด
+                        💵 เงินสด
                     {% elif order.payment_method == "transfer" %}
-                        โอนเงิน
+                        💳 โอนเงิน
                         {% if order.slip_image %}
                             <a href="{{ order.slip_image.url }}" target="_blank" class="slip-link">📄 ดูสลิป</a>
+                        {% else %}
+                            <span class="text-muted">❌ ไม่มีสลิป</span>
                         {% endif %}
                     {% endif %}
                 </td>
@@ -54,3 +66,4 @@
     <a href="{% url 'home' %}" class="btn-primary">🔙 กลับไปเลือกสินค้า</a>
 </div>
 {% endblock %}
+

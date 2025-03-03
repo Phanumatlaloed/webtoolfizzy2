@@ -17,6 +17,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>👤 ลูกค้า</th>  <!-- ✅ เพิ่มคอลัมน์ชื่อผู้ใช้ -->
                 <th>🆔 รหัสคำสั่งซื้อ</th>
                 <th>💰 ยอดรวม</th>
                 <th>💳 วิธีชำระเงิน</th>
@@ -28,15 +29,18 @@
         <tbody>
             {% for order in orders %}
             <tr>
+                <td>{{ order.user.username }}</td>  <!-- ✅ แสดง Username ของผู้สั่งซื้อ -->
                 <td>{{ order.id }}</td>
                 <td>{{ order.total_price }} ฿</td>
                 <td>
                     {% if order.payment_method == "cash" %}
-                        เงินสด
+                        💵 เงินสด
                     {% elif order.payment_method == "transfer" %}
-                        โอนเงิน
+                        💳 โอนเงิน
                         {% if order.slip_image %}
                             <a href="{{ order.slip_image.url }}" target="_blank" class="btn btn-sm btn-info">📄 ดูสลิป</a>
+                        {% else %}
+                            <span class="text-muted">❌ ไม่มีสลิป</span>
                         {% endif %}
                     {% endif %}
                 </td>
